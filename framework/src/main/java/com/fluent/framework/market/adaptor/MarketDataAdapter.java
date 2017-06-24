@@ -1,14 +1,12 @@
 package com.fluent.framework.market.adaptor;
 
 import org.slf4j.*;
-
 import java.util.*;
 import java.util.concurrent.atomic.*;
-
 import com.fluent.framework.core.*;
 import com.fluent.framework.events.core.*;
 import com.fluent.framework.market.core.*;
-import com.fluent.framework.reference.*;
+import com.fluent.framework.reference.core.*;
 
 
 
@@ -48,9 +46,9 @@ public abstract class MarketDataAdapter implements FluentEventListener, FluentLi
     }
 
 
-    public abstract boolean subscribe( ReferenceDataEvent event );
+    public abstract boolean subscribe( RefDataEvent event );
 
-    public abstract boolean unsubscribe( ReferenceDataEvent event );
+    public abstract boolean unsubscribe( RefDataEvent event );
 
 
 

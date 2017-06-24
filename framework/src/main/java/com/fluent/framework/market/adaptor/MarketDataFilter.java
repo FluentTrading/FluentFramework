@@ -6,9 +6,9 @@ import com.fluent.framework.market.event.*;
 
 public final class MarketDataFilter{
 
-    private final FluentConfigManager config;
+    private final FluentConfiguration config;
 
-    public MarketDataFilter( FluentConfigManager config ){
+    public MarketDataFilter( FluentConfiguration config ){
         this.config = config;
     }
 

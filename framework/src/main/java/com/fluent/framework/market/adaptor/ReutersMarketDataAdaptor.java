@@ -2,8 +2,9 @@ package com.fluent.framework.market.adaptor;
 
 import java.util.*;
 
+import com.fluent.framework.events.core.*;
 import com.fluent.framework.market.core.*;
-import com.fluent.framework.reference.*;
+import com.fluent.framework.reference.core.*;
 
 
 public final class ReutersMarketDataAdaptor extends MarketDataAdapter{
@@ -15,10 +16,11 @@ public final class ReutersMarketDataAdaptor extends MarketDataAdapter{
         // TODO Auto-generated constructor stub
     }
 
+    
     @Override
-    public void onMessage( String message ) {
+    public boolean update( FluentEvent event ){
         // TODO Auto-generated method stub
-
+        return false;
     }
 
     @Override
@@ -34,13 +36,19 @@ public final class ReutersMarketDataAdaptor extends MarketDataAdapter{
     }
 
     @Override
-    public boolean subscribe( ReferenceDataEvent event ) {
+    public boolean subscribe( RefDataEvent event ) {
         // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public boolean unsubscribe( ReferenceDataEvent event ) {
+    public boolean unsubscribe( RefDataEvent event ) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean isSupported( FluentEventType type ) {
         // TODO Auto-generated method stub
         return false;
     }

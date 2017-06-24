@@ -20,10 +20,10 @@ public final class FluentInEventDispatcher implements FluentLifecycle, Runnable{
 
     private final int                                          bucketCapacity;
     private final int                                          queueCapacity;
-    private final FluentSingleThreadExecutor                   executor;
+    private final ExecutorService                              executor;
 
-    private final List<FluentEventListener>                          eventListeners;
-    private final ManyToOneConcurrentArrayQueue<FluentEvent>    eventQueue;
+    private final List<FluentEventListener>                    eventListeners;
+    private final ManyToOneConcurrentArrayQueue<FluentEvent>   eventQueue;
 
     private final static int                                   BUCKET_CAPACITY = THIRTY_TWO;
     private final static int                                   QUEUE_CAPACITY  = nextPowerOfTwo( MILLION );
@@ -33,7 +33,7 @@ public final class FluentInEventDispatcher implements FluentLifecycle, Runnable{
 
     // TODO: Use a better backoff mechanism
 
-    public FluentInEventDispatcher( FluentConfigManager cfgManager ){
+    public FluentInEventDispatcher( FluentConfiguration cfgManager ){
         this( BUCKET_CAPACITY, QUEUE_CAPACITY );
     }
 
@@ -45,7 +45,7 @@ public final class FluentInEventDispatcher implements FluentLifecycle, Runnable{
 
         this.eventListeners = new CopyOnWriteArrayList<FluentEventListener>( );
         this.eventQueue     = new ManyToOneConcurrentArrayQueue<FluentEvent>( queueCapacity );
-        this.executor       = new FluentSingleThreadExecutor( new FluentThreadFactory( "InDispatcher" ) );
+        this.executor       = Executors.newSingleThreadExecutor( new FluentThreadFactory( "InDispatcher" ) );
 
     }
 
@@ -79,9 +79,8 @@ public final class FluentInEventDispatcher implements FluentLifecycle, Runnable{
             return;
         }
 
-        executor.start( );
         keepDispatching = true;
-        executor.execute( this );
+        executor.submit( this );
 
         LOGGER.info( "Started Dispatcher with Q Size [{}] and B Size[{}].{}", queueCapacity, bucketCapacity, NEWLINE );
     }

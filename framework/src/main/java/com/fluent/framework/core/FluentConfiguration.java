@@ -15,7 +15,7 @@ import static com.fluent.framework.util.FluentToolkit.*;
 import static com.fluent.framework.util.FluentUtil.*;
 
 
-public final class FluentConfigManager{
+public final class FluentConfiguration{
 
     private final Region                         region;
     private final Environment                    environment;
@@ -47,11 +47,11 @@ public final class FluentConfigManager{
     public final static String                   MD_ADAPTORS_SECTION_KEY = "fluent.mdAdaptors";
 
 
-    private final static String                  NAME                    = FluentConfigManager.class.getSimpleName( );
+    private final static String                  NAME                    = FluentConfiguration.class.getSimpleName( );
     private final static Logger                  LOGGER                  = LoggerFactory.getLogger( NAME );
 
 
-    public FluentConfigManager( String configFileName ) throws FluentException{
+    public FluentConfiguration( String configFileName ) throws FluentException{
 
         this.cfgFileName    = notBlank( configFileName, "Config file name is invalid." );
         this.configuration  = loadConfigs( configFileName );

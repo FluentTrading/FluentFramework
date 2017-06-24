@@ -63,10 +63,22 @@ public final class FluentContext{
 
     public enum Environment{
 
-        DEV,
-        SIM,
-        UAT,
-        PROD;
+        DEV ('D'),
+        QA  ('Q'),
+        SIM ('S'),
+        UAT ('U'),
+        PROD('P');
+        
+        private final char code;
+        
+        private Environment( char code ){
+            this.code = code;
+        }
+        
+        public final char getCode( ){
+            return code;
+        }
+        
 
         public static Environment getEnvironment( Config configuration, String key ) {
 

@@ -9,11 +9,9 @@ import org.cliffc.high_scale_lib.*;
 import com.fluent.framework.core.*;
 import com.fluent.framework.events.core.*;
 import com.fluent.framework.events.in.*;
-import com.fluent.framework.events.out.*;
 import com.fluent.framework.market.adaptor.*;
-import com.fluent.framework.market.core.*;
 import com.fluent.framework.market.event.*;
-import com.fluent.framework.reference.*;
+import com.fluent.framework.reference.core.*;
 
 import static com.fluent.framework.events.core.FluentEventType.*;
 import static com.fluent.framework.util.FluentUtil.*;
@@ -32,7 +30,7 @@ public final class MarketDataManager implements FluentLifecycle, FluentEventList
     private final static Logger                    LOGGER = LoggerFactory.getLogger( NAME );
 
 
-    public MarketDataManager( FluentConfigManager config, FluentInEventDispatcher inDispatcher ) throws FluentException{
+    public MarketDataManager( FluentConfiguration config, FluentInEventDispatcher inDispatcher ) throws FluentException{
 
         this.inDispatcher   = inDispatcher;
         this.mdCache        = new NonBlockingHashMap<>( );
@@ -68,7 +66,7 @@ public final class MarketDataManager implements FluentLifecycle, FluentEventList
 
 
     @Override
-    public final void mdUpdate( FluentEvent event ) {
+    public final void mdUpdate( MarketDataEvent event ) {
 
         FluentEventType type = event.getType( );
 
@@ -111,7 +109,7 @@ public final class MarketDataManager implements FluentLifecycle, FluentEventList
 
 
     @Override
-    public final boolean outUpdate( FluentEvent event ) {
+    public final boolean update( FluentEvent event ) {
 
         FluentEventType type    = event.getType( );
 
@@ -140,9 +138,9 @@ public final class MarketDataManager implements FluentLifecycle, FluentEventList
         try{
 
             MarketDataSubscribeEvent sEvent = (MarketDataSubscribeEvent) event;
-            ReferenceDataEvent[ ] subEvents = sEvent.getReferenceEvents( );
+            RefDataEvent[ ] subEvents = sEvent.getReferenceEvents( );
 
-            for( ReferenceDataEvent subEvent : subEvents ){
+            for( RefDataEvent subEvent : subEvents ){
 
                 LOGGER.debug( "Attempting to subscribe for [{}]", sEvent );
 
@@ -201,9 +199,9 @@ public final class MarketDataManager implements FluentLifecycle, FluentEventList
         try{
 
             MarketDataUnsubscribeEvent sEvent = (MarketDataUnsubscribeEvent) event;
-            ReferenceDataEvent[ ] subEvents = sEvent.getReferenceEvents( );
+            RefDataEvent[ ] subEvents = sEvent.getReferenceEvents( );
 
-            for( ReferenceDataEvent subEvent : subEvents ){
+            for( RefDataEvent subEvent : subEvents ){
 
                 LOGGER.debug( "Attempting to unsubscribe for [{}]", sEvent );
 

@@ -3,7 +3,7 @@ package com.fluent.framework.market.event;
 import java.util.*;
 
 import com.fluent.framework.events.core.*;
-import com.fluent.framework.reference.*;
+import com.fluent.framework.reference.core.*;
 
 import static com.fluent.framework.events.core.FluentEventSequencer.*;
 import static com.fluent.framework.events.core.FluentEventType.*;
@@ -11,12 +11,12 @@ import static com.fluent.framework.events.core.FluentEventType.*;
 
 public final class MarketDataUnsubscribeEvent extends FluentEvent{
 
-    private final ReferenceDataEvent[ ] refEvents;
+    private final RefDataEvent[ ] refEvents;
 
     private static final long           serialVersionUID = 1L;
 
 
-    public MarketDataUnsubscribeEvent( ReferenceDataEvent[ ] refEvents ){
+    public MarketDataUnsubscribeEvent( RefDataEvent[ ] refEvents ){
         super( increment( ), MD_UNSUBSCRIBE_EVENT );
 
         this.refEvents = refEvents;
@@ -24,7 +24,7 @@ public final class MarketDataUnsubscribeEvent extends FluentEvent{
     }
 
 
-    public final ReferenceDataEvent[ ] getReferenceEvents( ) {
+    public final RefDataEvent[ ] getReferenceEvents( ) {
         return refEvents;
     }
 

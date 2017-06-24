@@ -1,5 +1,5 @@
 package com.fluent.framework.collection;
-
+/*
 import org.HdrHistogram.*;
 import org.agrona.concurrent.*;
 import org.nustaq.serialization.simpleapi.*;
@@ -234,15 +234,12 @@ public final class TestDispatcherPerformance{
 
     public static void main( String ... args ) throws Exception {
 
-        /*
-         * testOffHeapPersistence( );
-         * 
-         * System.gc(); Thread.sleep( 2000 ); testDispatchAndPersistence( false );
-         * 
-         * System.gc(); Thread.sleep( 2000 );
-         */
+        testOffHeapPersistence( );
+        System.gc(); Thread.sleep( 2000 ); testDispatchAndPersistence( false );
+        System.gc(); Thread.sleep( 2000 );
         testDispatchAndPersistence( true );
 
     }
 
 }
+*/

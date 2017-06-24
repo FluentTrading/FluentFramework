@@ -34,7 +34,7 @@ public final class InboundDispatcherPerformance{
         dispatcher.register( listener );
 
         for( int i = 0; i < eventCount; i++ ){
-            FluentInEvent event = new MarketDataEvent( Exchange.CME, InstrumentSubType.ED_FUTURES, "EDM6", 99.0, 100 + i, 100.0, 200 + i );
+            FluentEvent event = new MarketDataEvent( i, "EDM6", 99.0, 100 + i, 100.0, 200 + i );
             dispatcher.enqueue( event );
 
             /*
@@ -159,13 +159,13 @@ public final class InboundDispatcherPerformance{
 
 
         @Override
-        public final boolean isSupported( FluentInType type ) {
+        public final boolean isSupported( FluentEventType type ) {
             return true;
         }
 
 
         @Override
-        public final boolean inUpdate( FluentInEvent event ) {
+        public final boolean update( FluentEvent event ) {
             histogram.recordValue( (System.nanoTime( ) - event.getCreationTime( )) );
             ++eventsReceived;
 

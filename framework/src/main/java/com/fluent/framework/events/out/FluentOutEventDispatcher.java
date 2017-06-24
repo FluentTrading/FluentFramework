@@ -19,7 +19,7 @@ public final class FluentOutEventDispatcher implements FluentLifecycle, Runnable
     private volatile boolean                                    keepDispatching;
 
     private final int                                           queueCapacity;
-    private final FluentSingleThreadExecutor                    executor;
+    private final ExecutorService                               executor;
 
     private final List<FluentEventListener>                     eventListener;
     private final ManyToOneConcurrentArrayQueue<FluentEvent>    eventQueue;
@@ -29,17 +29,17 @@ public final class FluentOutEventDispatcher implements FluentLifecycle, Runnable
     private final static Logger                                 LOGGER         = LoggerFactory.getLogger( NAME );
 
 
-    public FluentOutEventDispatcher( FluentConfigManager cfgManager ){
+    public FluentOutEventDispatcher( FluentConfiguration cfgManager ){
         this( QUEUE_CAPACITY, cfgManager );
     }
 
 
-    public FluentOutEventDispatcher( int queueCapacity, FluentConfigManager cfgManager ){
+    public FluentOutEventDispatcher( int queueCapacity, FluentConfiguration cfgManager ){
 
         this.queueCapacity  = notNegative( queueCapacity, "Queue Capacity must be positive." );
         this.eventListener  = new CopyOnWriteArrayList<>( );
         this.eventQueue     = new ManyToOneConcurrentArrayQueue<>( queueCapacity );
-        this.executor       = new FluentSingleThreadExecutor( new FluentThreadFactory( "OutDispatcher" ) );
+        this.executor       = Executors.newSingleThreadExecutor( new FluentThreadFactory( "OutDispatcher" ) );
 
     }
 
@@ -66,9 +66,8 @@ public final class FluentOutEventDispatcher implements FluentLifecycle, Runnable
             return;
         }
 
-        executor.start( );
         keepDispatching = true;
-        executor.execute( this );
+        executor.submit( this );
 
         LOGGER.info( "Started and primed Out-Dispatcher with Q Size [{}].{}", queueCapacity, NEWLINE );
     }

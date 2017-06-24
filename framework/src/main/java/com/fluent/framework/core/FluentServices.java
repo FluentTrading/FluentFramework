@@ -5,25 +5,25 @@ import com.fluent.framework.admin.core.*;
 import com.fluent.framework.events.in.*;
 import com.fluent.framework.events.out.*;
 import com.fluent.framework.market.core.*;
-import com.fluent.framework.persistence.*;
-import com.fluent.framework.reference.*;
+import com.fluent.framework.reference.core.*;
 
 
 public final class FluentServices{
 
-    private final FluentConfigManager          cfgManager;
+    private final FluentConfiguration          cfgManager;
     private final StateManager                 stateManager;
     private final FluentInEventDispatcher      inDispatcher;
-    private final ChroniclePersisterService    persister;
+   // private final ChroniclePersisterService    persister;
     private final FluentOutEventDispatcher     outDispatcher;
     private final MarketDataManager            mdManager;
-    private final ReferenceDataManager         refManager;
+    private final RefDataManager         refManager;
 
 
+    /*
     public FluentServices( String configFileName ) throws FluentException{
-        this.cfgManager     = new FluentConfigManager( configFileName );
+        this.cfgManager     = new FluentConfiguration( configFileName );
 
-        this.persister      = new ChroniclePersisterService( cfgManager );
+      //  this.persister      = new ChroniclePersisterService( cfgManager );
         this.inDispatcher   = new FluentInEventDispatcher( cfgManager );
         this.outDispatcher  = new FluentOutEventDispatcher( cfgManager );
 
@@ -32,9 +32,23 @@ public final class FluentServices{
         this.mdManager      = new MarketDataManager( cfgManager, inDispatcher );
         
     }
+    */
 
+    public FluentServices( FluentConfiguration cfgManager, 
+                            FluentInEventDispatcher inDispatcher, FluentOutEventDispatcher outDispatcher ,
+                            RefDataManager refManager, StateManager stateManager, MarketDataManager mdManager ){
 
-    public final FluentConfigManager getCfgManager( ){
+        this.cfgManager     = cfgManager;
+      //  this.persister      = new ChroniclePersisterService( cfgManager );
+        this.inDispatcher   = inDispatcher;
+        this.outDispatcher  = outDispatcher;
+        this.refManager     = refManager;
+        this.stateManager   = stateManager;
+        this.mdManager      = mdManager;
+        
+    }
+    
+    public final FluentConfiguration getCfgManager( ){
         return cfgManager;
     }
 
@@ -49,9 +63,9 @@ public final class FluentServices{
     }
     
 
-    public final ChroniclePersisterService getPersister( ){
-        return persister;
-    }
+//    public final ChroniclePersisterService getPersister( ){
+//        return persister;
+//    }
     
 
     public final FluentOutEventDispatcher getOutDispatcher( ){
@@ -59,7 +73,7 @@ public final class FluentServices{
     }
         
     
-    public final ReferenceDataManager getReferenceManager( ){
+    public final RefDataManager getReferenceManager( ){
         return refManager;
     }
     

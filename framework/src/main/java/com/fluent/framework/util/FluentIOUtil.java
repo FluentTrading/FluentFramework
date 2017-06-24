@@ -14,10 +14,9 @@ public final class FluentIOUtil{
 
 
     public final static List<String> loadFile( String filename ) throws FluentException, IOException{
-        
-        Path filePath   = Paths.get(  filename );
+        Path filePath   = Paths.get(filename);
         if( !Files.exists(filePath) ){
-            throw new FluentException( "FAILED to load " + filename + " as it doesn't exist." );
+            throw new FluentException( "FAILED to load " + filePath + " as it doesn't exist." );
         }
     
         List<String> all= Files.readAllLines( filePath );
@@ -25,7 +24,5 @@ public final class FluentIOUtil{
         return all;
     
     }
-
-
 
 }

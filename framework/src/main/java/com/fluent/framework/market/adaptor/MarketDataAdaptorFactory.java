@@ -19,7 +19,7 @@ public final class MarketDataAdaptorFactory{
 
 
 
-    protected final static Map<Exchange, MarketDataAdapter> createAdaptorMap( FluentConfigManager cfgManager )
+    public final static Map<Exchange, MarketDataAdapter> createAdaptorMap( FluentConfiguration cfgManager )
             throws FluentException {
 
         Map<Exchange, MarketDataAdapter> map = new HashMap<>( );
@@ -70,13 +70,13 @@ public final class MarketDataAdaptorFactory{
 
 
     protected final static MarketDataAdapter createReutersMDAdaptor( List<Exchange> exchanges,
-            FluentConfigManager cfgManager ) {
+            FluentConfiguration cfgManager ) {
         return null;
     }
 
 
     protected final static MarketDataAdapter createAdminMDAdaptor( List<Exchange> exchanges,
-            FluentConfigManager cfgManager ) {
+            FluentConfiguration cfgManager ) {
         return null;
     }
 
