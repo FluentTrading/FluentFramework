@@ -3,11 +3,11 @@ package com.fluent.framework.market.event;
 /* @formatter:Off */
 import java.util.*;
 
-import com.fluent.framework.events.core.*;
+import com.fluent.framework.events.*;
 import com.fluent.framework.reference.core.*;
 
-import static com.fluent.framework.events.core.FluentEventSequencer.*;
-import static com.fluent.framework.events.core.FluentEventType.*;
+import static com.fluent.framework.events.FluentEventSequencer.*;
+import static com.fluent.framework.events.FluentEventType.*;
 
 
 public final class MarketDataSubscribeEvent extends FluentEvent{

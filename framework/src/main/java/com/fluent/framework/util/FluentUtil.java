@@ -66,10 +66,13 @@ public final class FluentUtil{
     protected FluentUtil( ){}
 
 
-    public final static String getConfigFile( String key ) {
-        String cfgFile = System.getProperty( key );
-        if( !isBlank( cfgFile ) )
+    public final static String getConfigFile( String key ){
+        
+        String cfgFile  = System.getProperty( key );
+        boolean valid   = !isBlank(cfgFile); 
+        if( valid ){
             return cfgFile;
+        }
 
         throw new RuntimeException( "Config file must be specified as a system parameter [" + key + "]" );
 

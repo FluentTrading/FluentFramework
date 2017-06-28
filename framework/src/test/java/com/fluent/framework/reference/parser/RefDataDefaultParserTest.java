@@ -2,13 +2,12 @@ package com.fluent.framework.reference.parser;
 
 import org.junit.*;
 
-import java.nio.file.*;
+import java.util.*;
 
 import com.fluent.framework.market.core.*;
+import com.fluent.framework.market.instrument.*;
 import com.fluent.framework.reference.core.*;
-import com.fluent.framework.reference.parser.*;
 import com.fluent.framework.reference.provider.*;
-import com.fluent.framework.util.*;
 
 import static org.assertj.core.api.StrictAssertions.*;
 
@@ -22,13 +21,13 @@ public class RefDataDefaultParserTest{
     private final static SpreadType sType       = SpreadType.OUTRIGHT;
     private final static InstrumentSubType iType= InstrumentSubType.ED_FUTURES;
     private final static String fileName        = "C:\\temp\\TestReferenceData.txt";
-    private final static RefDataField[] COLS    = {};
+    private final static List<RefDataField>COLS = new ArrayList<>();
     
     
     @Before
     public void start( ){
-        provider    = new RefDataFileProvider( fileName, new RefDataDefaultParser("\\|", COLS) );    
-        manager     = new RefDataManager( 10, provider );
+        provider    = new RefDataFileProvider( fileName, new RefDataDefaultParser("\\|", COLS), null );    
+        manager     = new RefDataManager( 10, provider, null );
     }
     
    

@@ -1,20 +1,20 @@
-package com.fluent.framework.events.in;
+package com.fluent.framework.collection;
 /*@formatter:off */
-import org.agrona.concurrent.*;
-import org.slf4j.*;
 
+import org.slf4j.*;
 import java.util.*;
 import java.util.concurrent.*;
-
-import com.fluent.framework.collection.*;
+import org.agrona.concurrent.*;
 import com.fluent.framework.core.*;
-import com.fluent.framework.events.core.*;
+import com.fluent.framework.events.*;
+import com.fluent.framework.service.*;
 
 import static com.fluent.framework.util.FluentToolkit.*;
 import static com.fluent.framework.util.FluentUtil.*;
 
 
-public final class FluentInEventDispatcher implements FluentLifecycle, Runnable{
+//TODO: Should we use Disruptor or Agrona RingBuffer instead of ManyToOneConcurrentArrayQueue
+public final class FluentInDispatcher implements FluentService, FluentLifecycle, Runnable{
 
     private volatile boolean                                   keepDispatching;
 
@@ -27,18 +27,18 @@ public final class FluentInEventDispatcher implements FluentLifecycle, Runnable{
 
     private final static int                                   BUCKET_CAPACITY = THIRTY_TWO;
     private final static int                                   QUEUE_CAPACITY  = nextPowerOfTwo( MILLION );
-    private final static String                                NAME            = FluentInEventDispatcher.class.getSimpleName( );
+    private final static String                                NAME            = FluentInDispatcher.class.getSimpleName( );
     private final static Logger                                LOGGER          = LoggerFactory.getLogger( NAME );
 
 
     // TODO: Use a better backoff mechanism
 
-    public FluentInEventDispatcher( FluentConfiguration cfgManager ){
+    public FluentInDispatcher( FluentConfiguration cfgManager ){
         this( BUCKET_CAPACITY, QUEUE_CAPACITY );
     }
 
 
-    public FluentInEventDispatcher( int bucketCapacity, int queueCapacity ){
+    public FluentInDispatcher( int bucketCapacity, int queueCapacity ){
 
         this.bucketCapacity = notNegative( bucketCapacity, "Bucket Capacity must be positive." );
         this.queueCapacity  = notNegative( queueCapacity, "Queue Capacity must be positive." );
@@ -55,7 +55,13 @@ public final class FluentInEventDispatcher implements FluentLifecycle, Runnable{
         return NAME;
     }
 
-
+    
+    @Override
+    public final FluentServiceType getType(){
+        return FluentServiceType.IN_DISPATCH_SERVICE;
+    }
+    
+    
     public final int getBucketCapacity( ) {
         return bucketCapacity;
     }
@@ -82,7 +88,7 @@ public final class FluentInEventDispatcher implements FluentLifecycle, Runnable{
         keepDispatching = true;
         executor.submit( this );
 
-        LOGGER.info( "Started Dispatcher with Q Size [{}] and B Size[{}].{}", queueCapacity, bucketCapacity, NEWLINE );
+        LOGGER.info( "Started inbound dispatcher with queue Size [{}], bucket size[{}].", queueCapacity, bucketCapacity );
     }
 
 
@@ -133,7 +139,7 @@ public final class FluentInEventDispatcher implements FluentLifecycle, Runnable{
 
             int itemsPolled = eventQueue.drainTo( bucket, bucketCapacity );
             if( itemsPolled == ZERO ){
-                FluentBackoffStrategy.apply( HUNDRED );
+                FluentBackoff.backoff( );
                 return;
             }
 

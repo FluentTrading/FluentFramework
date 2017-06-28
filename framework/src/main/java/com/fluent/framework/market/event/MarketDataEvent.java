@@ -1,9 +1,9 @@
 package com.fluent.framework.market.event;
 /*@formatter:off */
 
-import com.fluent.framework.events.core.*;
+import com.fluent.framework.events.*;
 
-import static com.fluent.framework.events.core.FluentEventType.*;
+import static com.fluent.framework.events.FluentEventType.*;
 import static com.fluent.framework.util.FluentUtil.*;
 
 

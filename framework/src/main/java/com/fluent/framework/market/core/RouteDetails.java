@@ -9,9 +9,9 @@ import static com.fluent.framework.util.FluentToolkit.*;
 import static com.fluent.framework.util.FluentUtil.*;
 
 
-public final class ExchangeDetails{
+public final class RouteDetails{
 
-    private final Exchange  exchange;
+    private final String    route;
     private final String    open;
     private final long      openTimeMillis;
     private final String    close;
@@ -19,13 +19,13 @@ public final class ExchangeDetails{
     private final TimeZone  timeZone;
     private final int       speedLimit;
     
-    public ExchangeDetails( String key, String open, String close, String timeZoneStr, String speedLimit ) throws Exception{
+    public RouteDetails( String route, String open, String close, String timeZoneStr, String speedLimit ) throws Exception{
 
-        verify( key, open, close, timeZoneStr, speedLimit );
+        verify( route, open, close, timeZoneStr, speedLimit );
 
         this.open               = open;
         this.close              = close;
-        this.exchange           = Exchange.fromCode( key );
+        this.route              = route;
         this.timeZone           = TimeZone.getTimeZone( timeZoneStr );
         this.speedLimit         = Integer.parseInt( speedLimit );
         this.openTimeMillis     = getAdjustedOpen( open, close, timeZone, System.currentTimeMillis( ) );
@@ -34,12 +34,12 @@ public final class ExchangeDetails{
     }
 
 
-    private final void verify( String key, String open, String close, String timeZone, String speedimit ) throws Exception{
+    private final void verify( String route, String open, String close, String timeZone, String speedimit ) throws Exception{
 
-        String prefixMessage = "Exchange details is invalid as";
+        String prefixMessage = "Route details is invalid as";
 
-        if( Exchange.UNSUPPORTED == Exchange.fromCode( key ) ){
-            throw new Exception( prefixMessage + " Exchange [" + key + "] is invalid." );
+        if( isBlank(route)){
+            throw new Exception( prefixMessage + " Route [" + route + "] is invalid." );
         }
 
         if( isBlank(open) ){
@@ -59,8 +59,8 @@ public final class ExchangeDetails{
     }
 
     
-    public final Exchange getExchange( ){
-        return exchange;
+    public final String getRoute( ){
+        return route;
     }
 
     
@@ -109,7 +109,7 @@ public final class ExchangeDetails{
 
         StringBuilder builder = new StringBuilder( TWO * SIXTY_FOUR );
 
-        builder.append( "[Exchange=" ).append( exchange );
+        builder.append( "[ Route=" ).append( route );
         builder.append( ", Open=" ).append( openTimeMillis );
         builder.append( ", Close=" ).append( closeTimeMillis );
         builder.append( ", TimeZone=" ).append( timeZone.getID( ) );

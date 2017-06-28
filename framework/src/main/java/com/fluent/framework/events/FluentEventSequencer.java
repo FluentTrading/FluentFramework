@@ -1,4 +1,4 @@
-package com.fluent.framework.events.core;
+package com.fluent.framework.events;
 import com.fluent.framework.collection.*;
 
 public final class FluentEventSequencer{

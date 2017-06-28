@@ -11,38 +11,43 @@ import com.typesafe.config.*;
 
 public final class MarketDataAdaptorFactory{
 
-    private final static String EXCHANGE = "exchange";
-    private final static String PROVIDER = "provider";
+    private final static String EXCHANGE    = "exchange";
+    private final static String PROVIDER    = "provider";
+    
+    private final static String MARKET_KEY  = "fluent.mdAdaptors";
+    private final static String NAME        = MarketDataAdaptorFactory.class.getSimpleName( );
+    private final static Logger LOGGER      = LoggerFactory.getLogger( NAME );
 
-    private final static String NAME     = MarketDataAdaptorFactory.class.getSimpleName( );
-    private final static Logger LOGGER   = LoggerFactory.getLogger( NAME );
 
-
+    public final static List< ? extends Config> getMDAdaptorConfigs( FluentConfiguration cfgManager ){
+        return cfgManager.getRawConfig( ).getConfigList(  MARKET_KEY );
+    }
+    
 
     public final static Map<Exchange, MarketDataAdapter> createAdaptorMap( FluentConfiguration cfgManager )
-            throws FluentException {
+            throws Exception {
 
         Map<Exchange, MarketDataAdapter> map = new HashMap<>( );
 
-        for( Config adaptorConfig : cfgManager.getMDAdaptorConfigs( ) ){
+        for( Config adaptorConfig : getMDAdaptorConfigs(cfgManager) ){
 
-            MarketDataAdapter adaptor = null;
-            List<Exchange> exchanges = parseExchanges( adaptorConfig );
-            String mdProviderName = adaptorConfig.getString( PROVIDER );
+            MarketDataAdapter adaptor   = null;
+            List<Exchange> exchanges    = parseExchanges( adaptorConfig );
+            String mdProviderName       = adaptorConfig.getString( PROVIDER );
             MarketDataProvider provider = MarketDataProvider.getProvider( mdProviderName );
 
             switch( provider ){
 
+                case FILE:
+                    adaptor = createFileMDAdaptor( exchanges, cfgManager );
+                    break;
+                    
                 case REUTERS:
                     adaptor = createReutersMDAdaptor( exchanges, cfgManager );
                     break;
 
-                case ADMIN:
-                    adaptor = createAdminMDAdaptor( exchanges, cfgManager );
-                    break;
-
                 default:
-                    throw new FluentException( "MarketDataAdapter unimplemented for " + provider );
+                    throw new Exception( "MD adapter unimplemented for " + provider );
 
             }
 
@@ -68,20 +73,18 @@ public final class MarketDataAdaptorFactory{
 
     }
 
+    
+    protected final static MarketDataAdapter createFileMDAdaptor( List<Exchange> exchanges, FluentConfiguration cfg ){
+        return null;
+    }
+    
 
-    protected final static MarketDataAdapter createReutersMDAdaptor( List<Exchange> exchanges,
-            FluentConfiguration cfgManager ) {
+    protected final static MarketDataAdapter createReutersMDAdaptor( List<Exchange> exchanges, FluentConfiguration cfg ){
         return null;
     }
 
 
-    protected final static MarketDataAdapter createAdminMDAdaptor( List<Exchange> exchanges,
-            FluentConfiguration cfgManager ) {
-        return null;
-    }
-
-
-    private final static List<Exchange> parseExchanges( Config adaptorConfig ) throws FluentException {
+    private final static List<Exchange> parseExchanges( Config adaptorConfig ) throws Exception{
 
         List<Exchange> exchangeList = new ArrayList<>( );
 
@@ -89,10 +92,12 @@ public final class MarketDataAdaptorFactory{
             Exchange exchange = Exchange.fromCode( exchangeStr );
 
             if( Exchange.UNSUPPORTED == exchange ){
-                throw new FluentException( "Exchange: " + exchangeStr + " is invalid for MDAdaptor." );
+                throw new Exception( "Exchange: " + exchangeStr + " is invalid for MDAdaptor." );
             }
         }
+        
         return exchangeList;
+    
     }
 
 

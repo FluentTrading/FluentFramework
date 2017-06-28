@@ -1,16 +1,17 @@
 package com.fluent.framework.admin.core;
+/* @formatter:Off */
 
 import static com.fluent.framework.util.FluentUtil.*;
 
 
 public enum TimedTask {
 
-    TWO_MINS_TO_CLOSE( true, 2 * 60 * 1000 ),
-    ONE_MIN_TO_CLOSE( true, 1 * 60 * 1000 ),
-    TEN_SECS_TO_CLOSE( true, 1 * 10 * 1000 ),
-    CLOSING_TIME( true, 1 * 01 * 1000 ),
-    WORKING_HOURS( false, ZERO ),
-    UNAPPLICABLE( false, NEGATIVE_ONE );
+    TWO_MINS_TO_CLOSE   ( true, 2 * 60 * 1000   ),
+    ONE_MIN_TO_CLOSE    ( true, 1 * 60 * 1000   ),
+    TEN_SECS_TO_CLOSE   ( true, 1 * 10 * 1000   ),
+    CLOSING_TIME        ( true, 1 * 01 * 1000   ),
+    WORKING_HOURS       ( false, ZERO           ),
+    UNAPPLICABLE        ( false, NEGATIVE_ONE   );
 
     private final boolean     isClosing;
     private final long        offsetClose;

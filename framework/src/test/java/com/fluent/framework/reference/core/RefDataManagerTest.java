@@ -2,6 +2,7 @@ package com.fluent.framework.reference.core;
 
 import org.junit.*;
 import com.fluent.framework.market.core.*;
+import com.fluent.framework.market.instrument.*;
 import com.fluent.framework.reference.provider.*;
 
 import static org.assertj.core.api.StrictAssertions.*;
@@ -15,8 +16,8 @@ public class RefDataManagerTest{
         
     
     public RefDataManager create( int size ) throws Exception{
-        RefDataProvider provider= new RefDataFileProvider( "", null );    
-        RefDataManager manager  = new RefDataManager( size, provider );
+        RefDataProvider provider= new RefDataFileProvider( "", null, null );    
+        RefDataManager manager  = new RefDataManager( size, provider, null );
         manager.start( );
         Thread.sleep( 1000 );
         

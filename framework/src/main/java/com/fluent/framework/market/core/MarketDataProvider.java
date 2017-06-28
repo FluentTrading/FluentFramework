@@ -4,7 +4,7 @@ package com.fluent.framework.market.core;
 public enum MarketDataProvider {
 
     REUTERS,
-    ADMIN,
+    FILE,
     UNKNOWN;
 
     public final static MarketDataProvider getProvider( String name ) {

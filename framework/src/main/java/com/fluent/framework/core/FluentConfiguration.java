@@ -1,76 +1,79 @@
 package com.fluent.framework.core;
 
-/*@formatter:off */
 import org.slf4j.*;
 
+import java.io.*;
+/*@formatter:off */
 import java.util.*;
-
-import com.fluent.framework.admin.core.*;
-import com.fluent.framework.core.FluentContext.*;
-import com.fluent.framework.market.core.*;
 import com.typesafe.config.*;
 
-import static com.fluent.framework.util.FluentTimeUtil.*;
-import static com.fluent.framework.util.FluentToolkit.*;
+import com.fluent.framework.core.FluentContext.*;
+import com.fluent.framework.runner.*;
+
 import static com.fluent.framework.util.FluentUtil.*;
+import static com.fluent.framework.util.FluentToolkit.*;
+import static com.fluent.framework.util.FluentTimeUtil.*;
 
 
-public final class FluentConfiguration{
+public class FluentConfiguration{
 
-    private final Region                         region;
-    private final Environment                    environment;
-    private final Role                           role;
-    private final String                         cfgFileName;
-    private final Config                         configuration;
+    private final Role          role;
+    private final Region        region;
+    private final Environment   environment;
+    private final String        cfgFileName;
+    private final Config        rawConfig;
 
-    private final String                         appInstance;
-    private final String                         appRawOpenTime;
-    private final long                           appOpenTime;
-    private final String                         appRawCloseTime;
-    private final long                           appCloseTime;
-    private final String                         workingHours;
-    private final TimeZone                       appTimeZone;
-
-    private final Map<Exchange, ExchangeDetails> exchangeMap;
+    private final String        appInstance;
+    private final String        appRawOpenTime;
+    private final long          appOpenTime;
+    private final String        appRawCloseTime;
+    private final long          appCloseTime;
+    private final String        workingHours;
+    private final TimeZone      appTimeZone;
 
     // Application
-    private final static String                  APPLICATION_SECTION_KEY = "fluent.application.";
-    private final static String                  APP_ROLE_KEY            = APPLICATION_SECTION_KEY + "role";
-    private final static String                  APP_REGION_KEY          = APPLICATION_SECTION_KEY + "region";
-    private final static String                  APP_ENVIRONMENT_KEY     = APPLICATION_SECTION_KEY + "environment";
-    private final static String                  APP_INSTANCE_KEY        = APPLICATION_SECTION_KEY + "instance";
-    private final static String                  APP_OPEN_TIME_KEY       = APPLICATION_SECTION_KEY + "openTime";
-    private final static String                  APP_CLOSE_TIME_KEY      = APPLICATION_SECTION_KEY + "closeTime";
-    private final static String                  APP_TIMEZONE_KEY        = APPLICATION_SECTION_KEY + "timeZone";
+    public final static String     TOP_SECTION_KEY         = "fluent.";
+    private final static String     APPLICATION_SECTION_KEY = TOP_SECTION_KEY + "application.";
+    private final static String     APP_ROLE_KEY            = APPLICATION_SECTION_KEY + "role";
+    private final static String     APP_REGION_KEY          = APPLICATION_SECTION_KEY + "region";
+    private final static String     APP_ENVIRONMENT_KEY     = APPLICATION_SECTION_KEY + "environment";
+    private final static String     APP_INSTANCE_KEY        = APPLICATION_SECTION_KEY + "instance";
+    private final static String     APP_OPEN_TIME_KEY       = APPLICATION_SECTION_KEY + "openTime";
+    private final static String     APP_CLOSE_TIME_KEY      = APPLICATION_SECTION_KEY + "closeTime";
+    private final static String     APP_TIMEZONE_KEY        = APPLICATION_SECTION_KEY + "timeZone";
 
-    public final static String                   EXCHANGE_SECTION_KEY    = "fluent.exchanges";
-    public final static String                   MD_ADAPTORS_SECTION_KEY = "fluent.mdAdaptors";
+    private final static String NAME                        = FluentConfiguration.class.getSimpleName();
+    private final static Logger LOGGER                      = LoggerFactory.getLogger( NAME );
 
-
-    private final static String                  NAME                    = FluentConfiguration.class.getSimpleName( );
-    private final static Logger                  LOGGER                  = LoggerFactory.getLogger( NAME );
-
-
-    public FluentConfiguration( String configFileName ) throws FluentException{
+    
+    public FluentConfiguration( String configFileName ) throws Exception{
 
         this.cfgFileName    = notBlank( configFileName, "Config file name is invalid." );
-        this.configuration  = loadConfigs( configFileName );
+        this.rawConfig      = loadConfigs( configFileName );
 
-        this.region         = Region.getRegion( configuration, APP_REGION_KEY );
-        this.environment    = Environment.getEnvironment( configuration, APP_ENVIRONMENT_KEY );
-        this.role           = Role.getRole( configuration, APP_ROLE_KEY );
-        this.appInstance    = configuration.getString( APP_INSTANCE_KEY );
-        this.appTimeZone    = parseTimeZone( configuration.getString( APP_TIMEZONE_KEY ) );
-        this.appRawOpenTime = configuration.getString( APP_OPEN_TIME_KEY );
-        this.appRawCloseTime= configuration.getString( APP_CLOSE_TIME_KEY );
+        this.region         = Region.getRegion( rawConfig, APP_REGION_KEY );
+        this.environment    = Environment.getEnvironment( rawConfig, APP_ENVIRONMENT_KEY );
+        this.role           = Role.getRole( rawConfig, APP_ROLE_KEY );
+        this.appInstance    = rawConfig.getString( APP_INSTANCE_KEY );
+        this.appTimeZone    = parseTimeZone( rawConfig.getString( APP_TIMEZONE_KEY ) );
+        this.appRawOpenTime = rawConfig.getString( APP_OPEN_TIME_KEY );
+        this.appRawCloseTime= rawConfig.getString( APP_CLOSE_TIME_KEY );
         this.appOpenTime    = getAdjustedOpen( appRawOpenTime, appRawCloseTime, appTimeZone, System.currentTimeMillis( ) );
         this.appCloseTime   = getAdjustedClose( appRawOpenTime, appRawCloseTime, appTimeZone, System.currentTimeMillis( ) );
         this.workingHours   = appRawOpenTime + DASH + appRawCloseTime;
 
-        this.exchangeMap    = parseExchangeDetails( );
-
     }
 
+    
+    public final Config getRawConfig( ){
+        return rawConfig;
+    }
+    
+    
+    public final Config getSectionConfig( String sectionName ){
+        return rawConfig.getConfig( sectionName );
+    }
+    
     
     public final Role getRole( ){
         return role;
@@ -132,19 +135,7 @@ public final class FluentConfiguration{
     }
 
 
-    // Exchange Specific
-    // --------------------------------------------------------------
-    public final Map<Exchange, ExchangeDetails> getExchangeMap( ){
-        return exchangeMap;
-    }
-
-
-    public final Config getConfig( ){
-        return configuration;
-    }
-
-
-    public final String getFrameworkInfo( ){
+    public final String getConfigInfo( ){
 
         StringBuilder builder = new StringBuilder( TWO * SIXTY_FOUR );
 
@@ -153,7 +144,6 @@ public final class FluentConfiguration{
         builder.append( ", Environment:" ).append( environment );
         builder.append( ", Region:" ).append( region );
         builder.append( ", Role:" ).append( role );
-        builder.append( ", State:" ).append( StateManager.getState( ) );
         builder.append( ", Process:" ).append( getFullProcessName( ) );
         builder.append( R_BRACKET );
 
@@ -164,12 +154,13 @@ public final class FluentConfiguration{
 
     protected final Config loadConfigs( String fileName ){
 
-        Config configuration = null;
+        Config configuration    = null;
 
         try{
-
-            configuration = ConfigFactory.load( fileName );
-
+            File file           = new File( fileName );
+            configuration       = ConfigFactory.parseFile( file );
+            LOGGER.info("Loaded {}", configuration );
+            
         }catch( Exception e ){
             throw new RuntimeException( "Failed to load " + fileName, e );
         }
@@ -178,42 +169,10 @@ public final class FluentConfiguration{
 
     }
 
-    public final Map<Exchange, ExchangeDetails> getExchangeDetailsMap( ){
-        return exchangeMap;
-    }
-
-
-    protected final Map<Exchange, ExchangeDetails> parseExchangeDetails( ) throws FluentException {
-
-        Map<Exchange, ExchangeDetails> eMAP = new HashMap<>( );
-        List<? extends Config> eConfigList = configuration.getConfigList( EXCHANGE_SECTION_KEY );
-
-        for( Config eConfig : eConfigList ){
-
-            String exchangeKey = eConfig.getString( "name" );
-            String openTime = eConfig.getString( "openTime" );
-            String closeTime = eConfig.getString( "closeTime" );
-            String timeZone = eConfig.getString( "timeZone" );
-            String speedLimit = eConfig.getString( "speedLimit" );
-
-            ExchangeDetails details = new ExchangeDetails( exchangeKey, openTime, closeTime, timeZone, speedLimit );
-            eMAP.put( details.getExchange( ), details );
-
-        }
-
-        return eMAP;
-
-    }
-
-
-    public final List<? extends Config> getMDAdaptorConfigs( ) {
-        return configuration.getConfigList( MD_ADAPTORS_SECTION_KEY );
-    }
-
 
     @Override
     public String toString( ){
-        return getCfgFileName( ) + COMMASP + configuration.toString( );
+        return getCfgFileName( ) + COMMASP + rawConfig.toString( );
     }
 
 }

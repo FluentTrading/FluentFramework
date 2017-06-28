@@ -4,7 +4,7 @@ import org.slf4j.*;
 import java.util.*;
 import java.util.concurrent.atomic.*;
 import com.fluent.framework.core.*;
-import com.fluent.framework.events.core.*;
+import com.fluent.framework.events.*;
 import com.fluent.framework.market.core.*;
 import com.fluent.framework.reference.core.*;
 

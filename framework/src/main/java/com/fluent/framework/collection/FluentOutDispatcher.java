@@ -1,20 +1,20 @@
-package com.fluent.framework.events.out;
+package com.fluent.framework.collection;
 /*@formatter:off */
-import org.agrona.concurrent.*;
+
 import org.slf4j.*;
 import java.util.*;
 import java.util.concurrent.*;
-
-import com.fluent.framework.collection.*;
+import org.agrona.concurrent.*;
 import com.fluent.framework.core.*;
-import com.fluent.framework.events.core.*;
+import com.fluent.framework.events.*;
+import com.fluent.framework.service.*;
 
 import static com.fluent.framework.util.FluentToolkit.*;
 import static com.fluent.framework.util.FluentUtil.*;
 
 
-
-public final class FluentOutEventDispatcher implements FluentLifecycle, Runnable{
+//TODO: Should we use Disruptor or Agrona RingBuffer instead of ManyToOneConcurrentArrayQueue
+public final class FluentOutDispatcher implements FluentService, FluentLifecycle, Runnable{
 
     private volatile boolean                                    keepDispatching;
 
@@ -25,16 +25,16 @@ public final class FluentOutEventDispatcher implements FluentLifecycle, Runnable
     private final ManyToOneConcurrentArrayQueue<FluentEvent>    eventQueue;
 
     private final static int                                    QUEUE_CAPACITY = nextPowerOfTwo( MILLION );
-    private final static String                                 NAME           = FluentOutEventDispatcher.class.getSimpleName( );
+    private final static String                                 NAME           = FluentOutDispatcher.class.getSimpleName( );
     private final static Logger                                 LOGGER         = LoggerFactory.getLogger( NAME );
 
 
-    public FluentOutEventDispatcher( FluentConfiguration cfgManager ){
+    public FluentOutDispatcher( FluentConfiguration cfgManager ){
         this( QUEUE_CAPACITY, cfgManager );
     }
 
 
-    public FluentOutEventDispatcher( int queueCapacity, FluentConfiguration cfgManager ){
+    public FluentOutDispatcher( int queueCapacity, FluentConfiguration cfgManager ){
 
         this.queueCapacity  = notNegative( queueCapacity, "Queue Capacity must be positive." );
         this.eventListener  = new CopyOnWriteArrayList<>( );
@@ -47,6 +47,13 @@ public final class FluentOutEventDispatcher implements FluentLifecycle, Runnable
     public final String name( ) {
         return NAME;
     }
+    
+    
+    @Override
+    public final FluentServiceType getType(){
+        return FluentServiceType.OUT_DISPATCH_SERVICE;
+    }
+       
 
     public final int getQueueSize( ) {
         return eventQueue.size( );
@@ -69,7 +76,7 @@ public final class FluentOutEventDispatcher implements FluentLifecycle, Runnable
         keepDispatching = true;
         executor.submit( this );
 
-        LOGGER.info( "Started and primed Out-Dispatcher with Q Size [{}].{}", queueCapacity, NEWLINE );
+        LOGGER.info( "Started Out-Dispatcher with queue size [{}].", queueCapacity );
     }
 
 
@@ -114,7 +121,7 @@ public final class FluentOutEventDispatcher implements FluentLifecycle, Runnable
         try{
 
             if( eventQueue.peek( ) == null ){
-                FluentBackoffStrategy.apply( HUNDRED );
+                FluentBackoff.backoff( );
                 return;
             }
 

@@ -1,9 +1,9 @@
-package com.fluent.framework.events.core;
+package com.fluent.framework.events;
 /*@formatter:off */
 
 import java.io.*;
 
-import static com.fluent.framework.events.core.FluentJsonTags.*;
+import static com.fluent.framework.events.FluentTags.*;
 import static com.fluent.framework.util.FluentTimeUtil.*;
 import static com.fluent.framework.util.FluentUtil.*;
 

@@ -1,6 +1,6 @@
-package com.fluent.framework.market.core;
+package com.fluent.framework.market.instrument;
 
-import static com.fluent.framework.market.core.InstrumentType.*;
+import static com.fluent.framework.market.instrument.InstrumentType.*;
 
 
 public enum InstrumentSubType{

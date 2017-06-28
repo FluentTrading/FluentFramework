@@ -3,10 +3,9 @@ package com.fluent.framework.reference.provider;
 import org.slf4j.*;
 import java.util.*;
 
-import java.util.concurrent.atomic.*;
-import com.fluent.framework.core.*;
-import com.fluent.framework.events.core.*;
+import com.fluent.framework.collection.*;
 import com.fluent.framework.util.*;
+import com.typesafe.config.*;
 import com.fluent.framework.reference.core.*;
 import com.fluent.framework.reference.parser.*;
 
@@ -19,29 +18,21 @@ public final class RefDataFileProvider extends RefDataProvider{
     private final static Logger LOGGER      = LoggerFactory.getLogger( NAME );
     
     
-    public RefDataFileProvider( FluentServices services ){
-        this( fileName(services), parser(services) );
-        
+    public RefDataFileProvider( Config refConfig, RefDataParser parser, FluentInDispatcher dispatcher ){
+        this( refConfig.getString("fileName"), parser, dispatcher );
     }
     
-    public RefDataFileProvider( String fileName, RefDataParser parser ){
-        super( Source.FILE, parser );
+    public RefDataFileProvider( String fileName, RefDataParser parser, FluentInDispatcher dispatcher ){
+        super( Source.FILE, parser, dispatcher );
         
-        this.fileName   = fileName;        
+        this.fileName   = fileName;
+                
     }
     
     
     @Override
-    public final void start( FluentEventListener listener ){
-        if( listener == null ){
-            throw new RuntimeException( "No FluentEventListener configured for RefDataEvent");
-        }
-        
-        setListener( listener );
-        LOGGER.info( "Registered [{}] as a listener for updates.", listener.name( ) );
-        
+    public final void start( ){
         load( );
-        
     }
        
     
@@ -49,15 +40,13 @@ public final class RefDataFileProvider extends RefDataProvider{
                 
         try{
             
-            AtomicInteger counter     = new AtomicInteger( );
             List<String> dataLines    = FluentIOUtil.loadFile( fileName );
             
             for( String dataLine : dataLines ){
-                int instrumentIndex   = counter.getAndIncrement( );
-                RefDataEvent refData  = getParser( ).parse( instrumentIndex, dataLine );
+                RefDataEvent refData  = getParser( ).parse( dataLine );
                 if( refData == null ) continue;
                 
-                getListener( ).update( refData );              
+                enqueue( refData );              
             }
             
         }catch( Exception e ){
@@ -67,11 +56,7 @@ public final class RefDataFileProvider extends RefDataProvider{
     }
     
     
-    protected final static String fileName( FluentServices services ){
-        throw new RuntimeException( "Unimplemented");
-    }
 
-    
     
     
     

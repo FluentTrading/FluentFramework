@@ -1,10 +1,12 @@
 package com.fluent.framework.reference.provider;
 /*@formatter:off */
 
+import com.fluent.framework.collection.*;
 import com.fluent.framework.core.*;
-import com.fluent.framework.events.core.*;
 import com.fluent.framework.market.core.*;
+import com.fluent.framework.reference.core.*;
 import com.fluent.framework.reference.parser.*;
+
 
 public abstract class RefDataProvider{
 
@@ -13,17 +15,18 @@ public abstract class RefDataProvider{
         NETWORK;
     }
     
-    private volatile FluentEventListener listener;
     
     private final Source source;
     private final RefDataParser parser; 
+    private final FluentInDispatcher dispatcher;
     
-    public RefDataProvider( Source source, RefDataParser parser ){
-        this.source = source;
-        this.parser = parser;        
+    public RefDataProvider( Source source, RefDataParser parser, FluentInDispatcher dispatcher ){
+        this.source     = source;
+        this.parser     = parser;
+        this.dispatcher = dispatcher;
     }
     
-    public abstract void start( FluentEventListener listener );
+    public abstract void start( );
     
     
     protected final RefDataParser getParser( ){
@@ -34,22 +37,20 @@ public abstract class RefDataProvider{
     public final Source getSource(){
         return source;
     }
-       
+    
+
+    
+    protected final boolean enqueue( RefDataEvent event ){
+        return dispatcher.enqueue( event );
+    }
+    
     
     public final String createKey( Exchange exchange, String ricSymbol ){
         return RefDataParser.createKey( exchange, ricSymbol );
     }
-    
-    protected final void setListener( FluentEventListener listener ){
-        this.listener = listener;
-    }
-    
-    protected final FluentEventListener getListener( ){
-        return listener;
-    }
-    
+        
 
-    protected final static RefDataParser parser( FluentServices services ){
+    protected final static RefDataParser parser( FluentConfiguration config ){
         throw new RuntimeException( "Unimplemented");
     }
     

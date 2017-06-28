@@ -1,4 +1,4 @@
-package com.fluent.framework.events.core;
+package com.fluent.framework.events;
 /*@formatter:off */
 
 public interface FluentEventListener{

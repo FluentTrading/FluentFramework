@@ -3,8 +3,6 @@ package com.fluent.framework.util;
 import java.text.*;
 import java.util.*;
 
-import com.fluent.framework.core.*;
-
 import static com.fluent.framework.util.FluentUtil.*;
 
 
@@ -25,11 +23,11 @@ public final class FluentTimeUtil{
     }
 
 
-    public final static TimeZone parseTimeZone( String timeZoneStr ) throws FluentException {
+    public final static TimeZone parseTimeZone( String timeZoneStr ) throws Exception {
 
         TimeZone timeZone = TimeZone.getTimeZone( timeZoneStr );
         if( !timeZone.getID( ).equals( timeZoneStr ) ){
-            throw new FluentException( "TimeZone [" + timeZoneStr + "] is invalid." );
+            throw new Exception( "TimeZone [" + timeZoneStr + "] is invalid." );
         }
 
         return timeZone;

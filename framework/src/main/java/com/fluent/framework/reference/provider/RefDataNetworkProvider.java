@@ -1,9 +1,12 @@
 package com.fluent.framework.reference.provider;
 /*@formatter:off */
+
 import org.slf4j.*;
+
 import com.fluent.framework.core.*;
-import com.fluent.framework.events.core.*;
+import com.fluent.framework.collection.*;
 import com.fluent.framework.reference.parser.*;
+import com.typesafe.config.*;
 
 
 public final class RefDataNetworkProvider extends RefDataProvider{
@@ -12,27 +15,15 @@ public final class RefDataNetworkProvider extends RefDataProvider{
     private final static Logger LOGGER      = LoggerFactory.getLogger( NAME );
   
     
-    public RefDataNetworkProvider( FluentServices services ){
-        this( connection(services), parser(services) );
-        
-    }
     
-    public RefDataNetworkProvider( String connection, RefDataParser parser ){
-        super( Source.NETWORK, parser );
+    public RefDataNetworkProvider( Config refConfig, RefDataParser parser, FluentInDispatcher dispatcher ){
+        super( Source.NETWORK, parser, dispatcher );
     }
     
     
     @Override
-    public final void start( FluentEventListener listener ){
-        if( listener == null ){
-            throw new RuntimeException( "No FluentEventListener configured for RefDataEvent");
-        }
-        
-        setListener( listener );
-        LOGGER.info( "Registered [{}] as a listener for RefDataEvent updates.", listener.name( ) );
-        
+    public final void start(  ){
         connect( );
-        
     }
 
     
@@ -42,7 +33,7 @@ public final class RefDataNetworkProvider extends RefDataProvider{
     }
 
     
-    protected final static String connection( FluentServices services ){
+    protected final static String connection( FluentConfiguration config ){
         throw new RuntimeException( "Unimplemented");
     }
 

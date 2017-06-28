@@ -1,7 +1,7 @@
-package com.fluent.framework.admin.core;
+package com.fluent.framework.core;
 
 /* @formatter:Off */
-public enum FluentState {
+public enum FluentAppState{
 
     INITIALIZING    ( "Initializing" ),
     RECOVERING      ( "Recovering" ),
@@ -12,7 +12,7 @@ public enum FluentState {
 
     private final String description;
 
-    private FluentState( String description ){
+    private FluentAppState( String description ){
         this.description = description;
     }
 

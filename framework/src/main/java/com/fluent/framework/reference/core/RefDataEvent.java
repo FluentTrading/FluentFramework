@@ -1,10 +1,13 @@
 package com.fluent.framework.reference.core;
 /*@formatter:off */
-import com.fluent.framework.events.core.*;
-import com.fluent.framework.market.core.*;
 
-import static com.fluent.framework.events.core.FluentEventType.*;
-import static com.fluent.framework.events.core.FluentEventSequencer.*;
+import com.fluent.framework.events.*;
+import com.fluent.framework.market.core.*;
+import com.fluent.framework.market.instrument.*;
+
+import static com.fluent.framework.events.FluentEventSequencer.*;
+import static com.fluent.framework.events.FluentEventType.*;
+import static com.fluent.framework.util.FluentUtil.*;
 
 
 
@@ -22,14 +25,21 @@ public final class RefDataEvent extends FluentEvent{
     private final double lotSize;
     private final double pointValue;
 
-
     private static final long serialVersionUID = 1L;
 
+    
+    public RefDataEvent(    String instKey, Exchange exchange, SpreadType spreadType,
+                            InstrumentSubType iSubType, String ricSymbol, String exchangeSymbol,
+                            String expiryDate, double tickSize, double lotSize, double pointValue ){
+        this( NEGATIVE_ONE, instKey, exchange, spreadType, iSubType, ricSymbol,
+                exchangeSymbol, expiryDate, tickSize, lotSize, pointValue );
+        
+    }
 
-    public RefDataEvent(  int index, String instKey, Exchange exchange, SpreadType spreadType,
-                          InstrumentSubType instSubType,
-                          String ricSymbol, String exchangeSymbol, String expiryDate,
-                          double tickSize, double lotSize, double pointValue ){
+        
+    protected RefDataEvent( int index, String instKey, Exchange exchange, SpreadType spreadType,
+                            InstrumentSubType iSubType, String ricSymbol, String exchangeSymbol,
+                            String expiryDate, double tickSize, double lotSize, double pointValue ){
         
         super( increment(), REFERENCE_DATA );
         
@@ -37,7 +47,7 @@ public final class RefDataEvent extends FluentEvent{
         this.instKey        = instKey;
         this.exchange       = exchange;
         this.spreadType     = spreadType;
-        this.instSubType    = instSubType;
+        this.instSubType    = iSubType;
         
         this.ricSymbol      = ricSymbol;
         this.exchangeSymbol = exchangeSymbol;
@@ -49,6 +59,20 @@ public final class RefDataEvent extends FluentEvent{
     }
 
 
+
+    public final static RefDataEvent copy( int index, RefDataEvent event ){
+        RefDataEvent copy  = new RefDataEvent( index, event.getKey( ), event.getExchange( ), event.getSpreadType( ),
+                                                event.getInstSubType( ), event.getRicSymbol( ), event.getExchangeSymbol( ),
+                                                event.getExpiryDate( ), event.getTickSize( ), event.getLotSize( ), event.getPointValue( ) );
+        return copy;
+    }
+    
+    
+    public final boolean isIndexReady( ){
+        return ( NEGATIVE_ONE != index );
+    }
+    
+    
     public final int getIndex( ){
         return index;
     }
@@ -122,5 +146,7 @@ public final class RefDataEvent extends FluentEvent{
         builder.append( "]" );
     
     }
+
+
 
 }

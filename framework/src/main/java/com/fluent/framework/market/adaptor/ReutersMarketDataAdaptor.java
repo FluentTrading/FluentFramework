@@ -2,7 +2,7 @@ package com.fluent.framework.market.adaptor;
 
 import java.util.*;
 
-import com.fluent.framework.events.core.*;
+import com.fluent.framework.events.*;
 import com.fluent.framework.market.core.*;
 import com.fluent.framework.reference.core.*;
 

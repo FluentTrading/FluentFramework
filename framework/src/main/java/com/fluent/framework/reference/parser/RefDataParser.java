@@ -9,7 +9,7 @@ import static com.fluent.framework.util.FluentUtil.*;
 
 public abstract class RefDataParser{
     
-    public abstract RefDataEvent parse( int instIndex, String line );
+    public abstract RefDataEvent parse( String line );
         
     public final static String createKey( Exchange exchange, String ricSymbol ){
         return exchange + DOT + ricSymbol;        

@@ -1,4 +1,4 @@
-package com.fluent.framework.events.in;
+package com.fluent.framework.collection;
 
 import org.HdrHistogram.*;
 import org.slf4j.*;
@@ -7,7 +7,8 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-import com.fluent.framework.events.core.*;
+import com.fluent.framework.collection.*;
+import com.fluent.framework.events.*;
 import com.fluent.framework.market.core.*;
 import com.fluent.framework.market.event.*;
 
@@ -28,7 +29,7 @@ public final class InboundDispatcherPerformance{
     private final static Logger LOGGER               = LoggerFactory.getLogger( NAME );
 
 
-    public static double runLatencyTest( int run, int eventCount, FluentInEventDispatcher dispatcher ) throws Exception {
+    public static double runLatencyTest( int run, int eventCount, FluentInDispatcher dispatcher ) throws Exception {
 
         MeasurableLatencyListener listener = new MeasurableLatencyListener( eventCount );
         dispatcher.register( listener );
@@ -75,7 +76,7 @@ public final class InboundDispatcherPerformance{
                 // ChronicleTools.warmup();
                 // PersisterService<InEvent> p = new InChroniclePersisterService(eventThisIteration,
                 // chronicleFileName);
-                FluentInEventDispatcher dispatch = new FluentInEventDispatcher( TEST_BUCKET_CAPACITY, eventThisIteration );
+                FluentInDispatcher dispatch = new FluentInDispatcher( TEST_BUCKET_CAPACITY, eventThisIteration );
 
                 System.out.println( "" );
                 LOGGER.info( "Run: [{}], will feed [{}] events to Inbound dispatcher.", (run + 1), eventThisIteration );
@@ -112,7 +113,7 @@ public final class InboundDispatcherPerformance{
     }
 
 
-    private static void sanityCheck( int run, int eventCount, FluentInEventDispatcher dispatch ) {
+    private static void sanityCheck( int run, int eventCount, FluentInDispatcher dispatch ) {
 
         int eventUnprocessed = dispatch.getQueueSize( );
         if( eventUnprocessed != 0 ){

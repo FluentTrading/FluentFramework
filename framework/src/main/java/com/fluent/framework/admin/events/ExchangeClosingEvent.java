@@ -1,11 +1,11 @@
 package com.fluent.framework.admin.events;
 /* @formatter:Off */
 import com.fluent.framework.admin.core.*;
-import com.fluent.framework.events.core.*;
+import com.fluent.framework.events.*;
 import com.fluent.framework.market.core.*;
 
-import static com.fluent.framework.events.core.FluentEventType.*;
-import static com.fluent.framework.events.core.FluentEventSequencer.*;
+import static com.fluent.framework.events.FluentEventSequencer.*;
+import static com.fluent.framework.events.FluentEventType.*;
 
 public final class ExchangeClosingEvent extends FluentEvent{
 

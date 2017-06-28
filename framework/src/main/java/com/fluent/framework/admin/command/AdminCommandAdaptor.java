@@ -7,10 +7,11 @@ import java.lang.management.*;
 import com.j256.simplejmx.common.*;
 import com.j256.simplejmx.server.*;
 import com.fluent.framework.core.*;
-import com.fluent.framework.events.core.*;
+import com.fluent.framework.events.*;
 import com.fluent.framework.market.core.*;
 import com.fluent.framework.market.event.*;
 import com.fluent.framework.reference.core.*;
+import com.fluent.framework.service.*;
 
 import static com.fluent.framework.util.FluentToolkit.*;
 import static com.fluent.framework.util.FluentUtil.*;
@@ -19,16 +20,18 @@ import static com.fluent.framework.util.FluentUtil.*;
 public final class AdminCommandAdaptor implements FluentLifecycle{
 
     private final JmxServer      jmxServer;
-    private final FluentServices services;
+    private final FluentConfiguration config;
     private final RefDataManager refManager;
+    private final MarketDataManager mdManager;
 
     private final static String  NAME   = AdminCommandAdaptor.class.getSimpleName( );
     private final static Logger  LOGGER = LoggerFactory.getLogger( NAME );
 
 
-    public AdminCommandAdaptor( FluentServices services ){
-        this.services   = services;
-        this.refManager = services.getReferenceManager( );
+    public AdminCommandAdaptor( FluentConfiguration config, RefDataManager refManager, MarketDataManager mdManager ){
+        this.config     = config;
+        this.refManager = refManager;
+        this.mdManager  = mdManager;
         this.jmxServer  = getJMXServer( );
     }
 
@@ -41,7 +44,8 @@ public final class AdminCommandAdaptor implements FluentLifecycle{
 
 
     @Override
-    public final void start( ) throws FluentException {
+    public final void start( ) throws Exception{
+        
         try{
             jmxServer.start( );
             jmxServer.register( this );
@@ -49,7 +53,7 @@ public final class AdminCommandAdaptor implements FluentLifecycle{
             LOGGER.info( "Successfully started ADMIN JMX server at at [{}]", jmxServer.getServerPort( ) );
 
         }catch( Exception e ){
-            throw new FluentException( e );
+            throw new RuntimeException( e );
         }
     }
 
@@ -88,7 +92,7 @@ public final class AdminCommandAdaptor implements FluentLifecycle{
             
             int instIndex           = ref.getIndex( );
             FluentEvent mdEvent     = new MarketDataEvent( instIndex, symbol, bid, bidSize, ask, askSize );
-            services.getMdManager( ).update( mdEvent );
+            mdManager.update( mdEvent );
 
             message = prefix + " successfully updated.";
 

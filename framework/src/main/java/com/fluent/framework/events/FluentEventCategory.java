@@ -1,7 +1,7 @@
-package com.fluent.framework.events.core;
+package com.fluent.framework.events;
 /*@formatter:off */
 
-import static com.fluent.framework.events.core.FluentEventDirection.*;
+import static com.fluent.framework.events.FluentEventDirection.*;
 
 
 public enum FluentEventCategory{

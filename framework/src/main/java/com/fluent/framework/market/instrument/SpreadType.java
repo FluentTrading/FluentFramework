@@ -1,4 +1,4 @@
-package com.fluent.framework.market.core;
+package com.fluent.framework.market.instrument;
 
 
 public enum SpreadType{

@@ -1,10 +1,9 @@
 package com.fluent.framework.admin.events;
 
-/* @formatter:Off */
-import com.fluent.framework.events.core.*;
+import com.fluent.framework.events.*;
 
-import static com.fluent.framework.events.core.FluentEventType.*;
-import static com.fluent.framework.events.core.FluentEventSequencer.*;
+import static com.fluent.framework.events.FluentEventSequencer.*;
+import static com.fluent.framework.events.FluentEventType.*;
 
 public final class MetronomeEvent extends FluentEvent{
 

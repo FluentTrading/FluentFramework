@@ -5,22 +5,23 @@ import org.slf4j.*;
 import java.util.*;
 
 import org.cliffc.high_scale_lib.*;
-
+import com.fluent.framework.collection.*;
 import com.fluent.framework.core.*;
-import com.fluent.framework.events.core.*;
-import com.fluent.framework.events.in.*;
+import com.fluent.framework.events.*;
 import com.fluent.framework.market.adaptor.*;
 import com.fluent.framework.market.event.*;
 import com.fluent.framework.reference.core.*;
+import com.fluent.framework.service.*;
 
-import static com.fluent.framework.events.core.FluentEventType.*;
 import static com.fluent.framework.util.FluentUtil.*;
+import static com.fluent.framework.events.FluentEventType.*;
+import static com.fluent.framework.service.FluentServiceType.*;
 
 
-public final class MarketDataManager implements FluentLifecycle, FluentEventListener, MarketDataListener{
+public final class MarketDataManager implements FluentService, FluentEventListener, MarketDataListener{
 
     private final MarketDataFilter                 mdFilter;
-    private final FluentInEventDispatcher          inDispatcher;
+    private final FluentInDispatcher               inDispatcher;
 
     private final Map<String, Integer>             subsCounter;
     private final Map<String, MarketDataEvent>     mdCache;
@@ -30,7 +31,7 @@ public final class MarketDataManager implements FluentLifecycle, FluentEventList
     private final static Logger                    LOGGER = LoggerFactory.getLogger( NAME );
 
 
-    public MarketDataManager( FluentConfiguration config, FluentInEventDispatcher inDispatcher ) throws FluentException{
+    public MarketDataManager( FluentConfiguration config, FluentInDispatcher inDispatcher ) throws Exception{
 
         this.inDispatcher   = inDispatcher;
         this.mdCache        = new NonBlockingHashMap<>( );
@@ -46,6 +47,11 @@ public final class MarketDataManager implements FluentLifecycle, FluentEventList
         return NAME;
     }
 
+    
+    @Override
+    public final FluentServiceType getType( ){
+        return MARKET_DATA_SERVICE;
+    }
 
     @Override
     public final boolean isSupported( FluentEventType type ) {
@@ -54,14 +60,14 @@ public final class MarketDataManager implements FluentLifecycle, FluentEventList
 
 
     @Override
-    public final void start( ) throws FluentException {
+    public final void start( ) throws Exception {
 
         for( MarketDataAdapter adaptor : adaptorMap.values( ) ){
             adaptor.register( this );
             adaptor.start( );
         }
         
-        LOGGER.info( "Started MarketDataManager for {}.{}", adaptorMap.keySet( ), NEWLINE );
+        LOGGER.info( "Started MarketDataManager for {}", adaptorMap.keySet( ) );
     }
 
 
@@ -246,7 +252,7 @@ public final class MarketDataManager implements FluentLifecycle, FluentEventList
 
 
     @Override
-    public final void stop( ) throws FluentException {
+    public final void stop( ) throws Exception {
         for( MarketDataAdapter adaptor : adaptorMap.values( ) ){
             adaptor.stop( );
         }

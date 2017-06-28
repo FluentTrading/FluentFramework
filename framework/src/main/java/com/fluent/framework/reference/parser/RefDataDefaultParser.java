@@ -1,7 +1,10 @@
 package com.fluent.framework.reference.parser;
 /*@formatter:off */
 
+import java.util.*;
+
 import com.fluent.framework.market.core.*;
+import com.fluent.framework.market.instrument.*;
 import com.fluent.framework.reference.core.*;
 
 import static com.fluent.framework.util.FluentUtil.*;
@@ -11,18 +14,18 @@ import static com.fluent.framework.util.FluentToolkit.*;
 public class RefDataDefaultParser extends RefDataParser{
     
     private final String delimiter;
-    private final RefDataField[] columns;
+    private final List<RefDataField> columns;
     
     //public final static String DELIMITER   = "\\" + PIPE;
     //public final static int EXPECTED_LENGTH= RefDataDefaultParser.values( ).length;
     
-    public RefDataDefaultParser( String delimiter, RefDataField[] columns ){
+    public RefDataDefaultParser( String delimiter, List<RefDataField> columns ){
         this.delimiter  = delimiter;
         this.columns    = columns;
     }
 
     @Override
-    public final RefDataEvent parse( int instIndex, String line ){
+    public final RefDataEvent parse( String line ){
         
         boolean isInvalid       = isBlank( line );
         if( isInvalid ) return null;
@@ -34,7 +37,7 @@ public class RefDataDefaultParser extends RefDataParser{
         boolean tkInvalid       = (tokens == null);
         if( tkInvalid ) return null;
         
-        int expectedLength      = columns.length;
+        int expectedLength      = columns.size( );
         boolean tokensMismatch  = expectedLength != tokens.length;
         if( tokensMismatch ) return null;
                 
@@ -50,7 +53,7 @@ public class RefDataDefaultParser extends RefDataParser{
         double pointValue       = Double.valueOf( parse( tokens, index++, ZERO_STRING ));
         
         String instKey          = createKey( exchange, ricSymbol );
-        RefDataEvent event      = new RefDataEvent( instIndex, instKey, exchange, spreadType, iType,
+        RefDataEvent event      = new RefDataEvent( instKey, exchange, spreadType, iType,
                                                     ricSymbol, exchangeSymbol, expiryDate,
                                                     tickSize, lotSize, pointValue );
         
