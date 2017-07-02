@@ -1,0 +1,18 @@
+package fluent.framework.events;
+import fluent.framework.collection.*;
+
+public final class FluentEventSequencer{
+    
+    private final static FluentAtomicLong SEQUENCE = new FluentAtomicLong( );
+    
+    public final static long increment( ){
+        return SEQUENCE.getAndIncrement( );
+    }
+    
+//    
+//    public final static long current( ){
+//        return SEQUENCE.get( );
+//    }
+    
+
+}

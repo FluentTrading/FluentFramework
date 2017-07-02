@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/Framework/src/main/java/com/fluent/framework/runner/TestLauncher.java"/>
+<listEntry value="/Framework/src/main/java/fluent/framework/runner/TestLauncher.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.fluent.framework.runner.TestLauncher"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="fluent.framework.runner.TestLauncher"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Framework"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dconfig.trace=loads&#13;&#10;-Dfluent.configFile=fluent.conf"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dconfig.trace=loads&#13;&#10;-Dfluent.configFile=fluent.conf&#13;&#10;-Dcom.sun.management.jmxremote&#13;&#10;-Dcom.sun.management.jmxremote.ssl=false&#13;&#10;-Dcom.sun.management.jmxremote.local.only=false&#13;&#10;-Dcom.sun.management.jmxremote.authenticate=false"/>
 <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:Framework/src/main/config/DEV}"/>
 </launchConfiguration>
